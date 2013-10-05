@@ -8,7 +8,7 @@ taken.
 
 Use pip or easy_install:
 
-    pip install git+git://github.com/thegedge/chooks.git#egg=chooks
+    pip install 'git+git://github.com/thegedge/chooks.git#egg=chooks'
 
 If some interest grows then I will add this project to PyPI. Alternatively, you
 can install chooks manually. Make sure bin/chooks is in your `PATH` environment
@@ -20,8 +20,9 @@ Chooks can be executed on the command-line:
 
     chooks <command> [<command arguments>...]
 
-Where the command can be one of `install`, `add`, `remove`, `list`, `help`, or
-`execute`. For more information on any of these commands use `chooks help cmd`.
+Where the command can be one of `add`, `disable`, `enable`, `execute`, `help`,
+`install`, `list`, or `remove`. For more information on any of these commands
+use `chooks help cmd`.
 
 ## Install
 
