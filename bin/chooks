@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+"""An interface to help setting up a Git repository to use chooks.
+
+Usage:
+  chooks <command> [<args>...]
+
+Commands:
+  add      Add or update a chook for a repository.
+  disable  Prevent a hook from executing.
+  execute  Execute a chook.
+  list     List all chooks in a repository.
+  remove   Remove a chook from a repository.
+
+See 'git help <command>' for more information on a specific command.
+"""
+import docopt
+import chooks
+import importlib
+import sys
+
+
+lazy_commands = {
+    'add':     lambda: importlib.import_module('chooks.commands.add'),
+    'enable':  lambda: importlib.import_module('chooks.commands.enable'),
+    'disable': lambda: importlib.import_module('chooks.commands.disable'),
+    'execute': lambda: importlib.import_module('chooks.commands.execute'),
+    'install': lambda: importlib.import_module('chooks.commands.install'),
+    'list':    lambda: importlib.import_module('chooks.commands.list'),
+    'remove':  lambda: importlib.import_module('chooks.commands.remove'),
+}
+
+aliases = {
+    'ls': 'list',
+    'rm': 'remove',
+    'del': 'remove',
+    'delete': 'remove',
+
+    # Some chook-y aliases
+    'lay': 'add',
+    'incubate': 'enable',
+    'cluck': 'list',
+    'fry': 'remove',
+    'hatch': 'execute',
+    'roost': 'install',
+}
+
+UNKNOWN_CMD = "'%s' is not a chooks command. See 'chooks help'."
+
+
+def main(argv=None):
+    options = docopt.docopt(__doc__,
+                            argv=argv or sys.argv[1:],
+                            version=chooks.__version__,
+                            options_first=True)
+
+    cmd_name = aliases.get(options['<command>'], options['<command>'])
+    if cmd_name in lazy_commands:
+        cmd = lazy_commands[cmd_name]()
+        args = [cmd_name] + options['<args>']
+        args = docopt.docopt(cmd.__doc__, argv=args)
+        sys.exit(cmd.run(args))
+    elif cmd_name in ('help', 'oology'):
+        args = options['<args>']
+        if args:
+            if args[0] in lazy_commands:
+                cmd = lazy_commands[args[0]]()
+                print cmd.__doc__
+            else:
+                print UNKNOWN_CMD % args[0]
+                sys.exit(1)
+        else:
+            print __doc__
+    else:
+        print UNKNOWN_CMD % cmd_name
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
