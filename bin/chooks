@@ -7,7 +7,9 @@ Usage:
 Commands:
   add      Add or update a chook for a repository.
   disable  Prevent a hook from executing.
+  enable   Re-enable a disabled hook.
   execute  Execute a chook.
+  install  Install bootstrap hooks into git repository to execute your chooks.
   list     List all chooks in a repository.
   remove   Remove a chook from a repository.
 
